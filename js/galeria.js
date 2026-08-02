@@ -18,12 +18,24 @@ async function fetchFotosCarpeta() {
   }));
 }
 
-function abrirLightbox(url) {
-  const overlay = document.getElementById("lightboxOverlay");
+let fotosLightbox = [];
+let indiceLightbox = 0;
+
+function mostrarFotoLightbox(idx) {
   const img = document.getElementById("lightboxImg");
-  if (!overlay || !img) return;
-  img.src = url;
+  if (!img || fotosLightbox.length === 0) return;
+  indiceLightbox = (idx + fotosLightbox.length) % fotosLightbox.length;
+  img.src = fotosLightbox[indiceLightbox];
+}
+
+function abrirLightbox(idx) {
+  const overlay = document.getElementById("lightboxOverlay");
+  if (!overlay) return;
+  mostrarFotoLightbox(idx);
   overlay.classList.add("open");
+  const mostrarFlechas = fotosLightbox.length > 1 ? "flex" : "none";
+  document.getElementById("lightboxPrev").style.display = mostrarFlechas;
+  document.getElementById("lightboxNext").style.display = mostrarFlechas;
 }
 
 function cerrarLightbox() {
@@ -35,11 +47,17 @@ function cerrarLightbox() {
 
 function initLightbox() {
   document.getElementById("lightboxClose")?.addEventListener("click", cerrarLightbox);
+  document.getElementById("lightboxPrev")?.addEventListener("click", () => mostrarFotoLightbox(indiceLightbox - 1));
+  document.getElementById("lightboxNext")?.addEventListener("click", () => mostrarFotoLightbox(indiceLightbox + 1));
   document.getElementById("lightboxOverlay")?.addEventListener("click", (e) => {
     if (e.target.id === "lightboxOverlay") cerrarLightbox();
   });
   document.addEventListener("keydown", (e) => {
+    const overlay = document.getElementById("lightboxOverlay");
+    if (!overlay || !overlay.classList.contains("open")) return;
     if (e.key === "Escape") cerrarLightbox();
+    if (e.key === "ArrowLeft") mostrarFotoLightbox(indiceLightbox - 1);
+    if (e.key === "ArrowRight") mostrarFotoLightbox(indiceLightbox + 1);
   });
 }
 
@@ -58,6 +76,9 @@ async function renderGaleria() {
       return;
     }
 
+    fotosLightbox = items.filter((item) => (item.Tipo || "").toLowerCase() !== "video").map((item) => item.URL || item.Miniatura);
+    let contadorFotos = 0;
+
     grid.innerHTML = items
       .map((item) => {
         const esVideo = (item.Tipo || "").toLowerCase() === "video";
@@ -72,7 +93,8 @@ async function renderGaleria() {
             ? `<a href="${escapeHTML(item.URL)}" target="_blank" rel="noopener" class="card-media">${media}</a>`
             : `<div class="card-media">${media}</div>`;
         } else if (item.URL || item.Miniatura) {
-          contenido = `<div class="card-media clicable" role="button" tabindex="0" data-lightbox-url="${escapeHTML(item.URL || item.Miniatura)}">${media}</div>`;
+          const idxFoto = contadorFotos++;
+          contenido = `<div class="card-media clicable" role="button" tabindex="0" data-lightbox-idx="${idxFoto}">${media}</div>`;
         } else {
           contenido = `<div class="card-media">${media}</div>`;
         }
@@ -94,8 +116,8 @@ async function renderGaleria() {
       })
       .join("");
 
-    grid.querySelectorAll("[data-lightbox-url]").forEach((el) => {
-      const abrir = () => abrirLightbox(el.dataset.lightboxUrl);
+    grid.querySelectorAll("[data-lightbox-idx]").forEach((el) => {
+      const abrir = () => abrirLightbox(Number(el.dataset.lightboxIdx));
       el.addEventListener("click", abrir);
       el.addEventListener("keydown", (e) => {
         if (e.key === "Enter" || e.key === " ") {

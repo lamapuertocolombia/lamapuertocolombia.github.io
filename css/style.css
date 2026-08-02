@@ -496,8 +496,12 @@ img {
 .card-media img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   display: block;
+}
+
+#galeriaGrid .card-media img {
+  object-fit: contain;
 }
 
 .card-media.clicable {
@@ -541,6 +545,120 @@ img {
   border-radius: 50%;
   font-size: 1.3rem;
   cursor: pointer;
+}
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  color: white;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  font-size: 1.6rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-prev {
+  left: 20px;
+}
+
+.lightbox-next {
+  right: 20px;
+}
+
+.card.clicable {
+  cursor: pointer;
+}
+
+.pilot-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 24px;
+}
+
+.pilot-modal-overlay.open {
+  display: flex;
+}
+
+.pilot-modal {
+  background: var(--bg-elevated);
+  border-radius: var(--radius);
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+.pilot-modal-media {
+  flex: 1.2;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+}
+
+.pilot-modal-media img {
+  width: 100%;
+  height: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+}
+
+.pilot-modal-media .icon {
+  width: 80px;
+  height: 80px;
+}
+
+.pilot-modal-info {
+  flex: 1;
+  padding: 28px;
+  overflow-y: auto;
+}
+
+.pilot-modal-info h3 {
+  font-size: 1.5rem;
+  margin: 0 0 6px;
+}
+
+.pilot-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 2;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 700px) {
+  .pilot-modal {
+    flex-direction: column;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .pilot-modal-media {
+    min-height: 240px;
+  }
 }
 
 .icon {
