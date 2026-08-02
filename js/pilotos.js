@@ -14,8 +14,8 @@ function pilotoCardHTML(p) {
     <div class="card">
       <div class="card-media">${
         p.Foto || p.Apodo || p.Nombre
-          ? imgWithFallback(p.Foto, `assets/pilotos/${slugify(p.Apodo || p.Nombre)}.jpg`, p.Apodo || p.Nombre, "🏍️")
-          : "🏍️"
+          ? imgWithFallback(p.Foto, `assets/pilotos/${slugify(p.Apodo || p.Nombre)}.jpg`, p.Apodo || p.Nombre, "moto")
+          : ICONS.moto
       }</div>
       <div class="card-body">
         ${p.Cargo ? `<p class="cargo-tag">${escapeHTML(p.Cargo)}</p>` : ""}

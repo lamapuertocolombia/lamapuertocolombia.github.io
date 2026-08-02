@@ -40,8 +40,8 @@ async function renderTienda() {
         <div class="card">
           <div class="card-media">${
             p.Imagen || p.SKU
-              ? imgWithFallback(p.Imagen, `assets/tienda/${slugify(p.SKU)}.jpg`, p.Nombre, "🛍️")
-              : "🛍️"
+              ? imgWithFallback(p.Imagen, `assets/tienda/${slugify(p.SKU)}.jpg`, p.Nombre, "tienda")
+              : ICONS.tienda
           }</div>
           <div class="card-body">
             ${p.SKU ? `<p class="sku-tag">SKU: ${escapeHTML(p.SKU)}</p>` : ""}

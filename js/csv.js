@@ -70,14 +70,33 @@ function slugify(value) {
     .replace(/(^-+|-+$)/g, "");
 }
 
-function imgWithFallback(explicitUrl, fallbackPath, alt, fallbackIcon) {
+function mostrarIconoFallback(img, iconKey) {
+  img.onerror = null;
+  const contenedor = img.closest(".card-media");
+  if (contenedor) contenedor.innerHTML = (typeof ICONS !== "undefined" && ICONS[iconKey]) || "";
+}
+
+function imgWithFallback(explicitUrl, fallbackPath, alt, iconKey) {
   const src = explicitUrl || fallbackPath;
-  return `<img src="${escapeHTML(src)}" alt="${escapeHTML(alt)}" onerror="this.onerror=null; this.closest('.card-media').innerHTML='${fallbackIcon}';">`;
+  return `<img src="${escapeHTML(src)}" alt="${escapeHTML(alt)}" onerror="mostrarIconoFallback(this, '${iconKey}')">`;
 }
 
 function parseFechaLocal(fechaStr) {
-  const [y, m, d] = fechaStr.split("-").map(Number);
-  return new Date(y, m - 1, d);
+  if (!fechaStr) return null;
+
+  const iso = fechaStr.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if (iso) {
+    const [, y, m, d] = iso;
+    return new Date(Number(y), Number(m) - 1, Number(d));
+  }
+
+  const us = fechaStr.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (us) {
+    const [, m, d, y] = us;
+    return new Date(Number(y), Number(m) - 1, Number(d));
+  }
+
+  return null;
 }
 
 async function fetchSheet(url) {

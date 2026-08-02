@@ -10,9 +10,8 @@ async function renderProximaActividad() {
     hoy.setHours(0, 0, 0, 0);
 
     const proximas = actividades
-      .filter((a) => a.Fecha)
       .map((a) => ({ ...a, fechaObj: parseFechaLocal(a.Fecha) }))
-      .filter((a) => a.fechaObj >= hoy)
+      .filter((a) => a.fechaObj && a.fechaObj >= hoy)
       .sort((a, b) => a.fechaObj - b.fechaObj);
 
     if (proximas.length === 0) {

@@ -14,8 +14,8 @@ async function renderFundadores() {
         <div class="card">
           <div class="card-media">${
             f.Foto || f.Apodo || f.Nombre
-              ? imgWithFallback(f.Foto, `assets/fundadores/${slugify(f.Apodo || f.Nombre)}.jpg`, f.Apodo || f.Nombre, "🎖️")
-              : "🎖️"
+              ? imgWithFallback(f.Foto, `assets/fundadores/${slugify(f.Apodo || f.Nombre)}.jpg`, f.Apodo || f.Nombre, "medalla")
+              : ICONS.medalla
           }</div>
           <div class="card-body">
             <h3>${escapeHTML(f.Apodo || f.Nombre)}</h3>

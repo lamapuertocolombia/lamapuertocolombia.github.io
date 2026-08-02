@@ -50,7 +50,7 @@ async function renderGaleria() {
     grid.innerHTML = items
       .map((item) => {
         const esVideo = (item.Tipo || "").toLowerCase() === "video";
-        const icono = esVideo ? "🎬" : "📷";
+        const icono = esVideo ? ICONS.video : ICONS.camara;
         const media = item.Miniatura
           ? `<img src="${escapeHTML(item.Miniatura)}" alt="${escapeHTML(item.Evento)}">`
           : icono;
