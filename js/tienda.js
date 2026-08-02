@@ -22,10 +22,51 @@ function stockBadgeHTML(stock) {
 
 let productosData = [];
 let fotosProductos = [];
+let fotosModalActual = [];
+let indiceModalActual = 0;
 
 function productoMediaHTML(p, idx) {
-  const fotoUrl = p.Imagen || fotosProductos[idx] || "";
+  const fotos = fotosProductos[idx] || [];
+  const fotoUrl = fotos[0] || "";
   return fotoUrl ? imgWithFallback(fotoUrl, "", p.Nombre, "tienda") : ICONS.tienda;
+}
+
+function renderModalMedia(fotos) {
+  fotosModalActual = fotos;
+  indiceModalActual = 0;
+  const media = document.getElementById("productModalMedia");
+  if (fotos.length === 0) {
+    media.innerHTML = ICONS.tienda;
+    return;
+  }
+  media.innerHTML = `
+    <img id="modalMediaImg" src="${escapeHTML(fotos[0])}" alt="">
+    ${
+      fotos.length > 1
+        ? `<button class="modal-media-nav modal-media-prev" id="modalMediaPrev" aria-label="Foto anterior">‹</button>
+           <button class="modal-media-nav modal-media-next" id="modalMediaNext" aria-label="Foto siguiente">›</button>
+           <div class="modal-media-dots">${fotos.map((_, i) => `<span class="modal-dot${i === 0 ? " active" : ""}" data-dot-idx="${i}"></span>`).join("")}</div>`
+        : ""
+    }
+  `;
+  if (fotos.length > 1) {
+    document.getElementById("modalMediaPrev").addEventListener("click", () => cambiarFotoModal(-1));
+    document.getElementById("modalMediaNext").addEventListener("click", () => cambiarFotoModal(1));
+    media.querySelectorAll(".modal-dot").forEach((dot) => {
+      dot.addEventListener("click", () => irAFotoModal(Number(dot.dataset.dotIdx)));
+    });
+  }
+}
+
+function irAFotoModal(idx) {
+  indiceModalActual = (idx + fotosModalActual.length) % fotosModalActual.length;
+  const img = document.getElementById("modalMediaImg");
+  if (img) img.src = fotosModalActual[indiceModalActual];
+  document.querySelectorAll(".modal-dot").forEach((dot, i) => dot.classList.toggle("active", i === indiceModalActual));
+}
+
+function cambiarFotoModal(delta) {
+  irAFotoModal(indiceModalActual + delta);
 }
 
 function controlesCompraHTML(p, uid) {
@@ -104,7 +145,7 @@ function wireControlesCompra(root) {
 function abrirProductoModal(idx) {
   const p = productosData[idx];
   if (!p) return;
-  document.getElementById("productModalMedia").innerHTML = productoMediaHTML(p, idx);
+  renderModalMedia(fotosProductos[idx] || []);
   const info = document.getElementById("productModalInfo");
   info.innerHTML = productoInfoHTML(p, "modal");
   wireControlesCompra(info);
@@ -121,7 +162,11 @@ function initProductoModal() {
     if (e.target.id === "productModalOverlay") cerrarProductoModal();
   });
   document.addEventListener("keydown", (e) => {
+    const overlay = document.getElementById("productModalOverlay");
+    if (!overlay || !overlay.classList.contains("open")) return;
     if (e.key === "Escape") cerrarProductoModal();
+    if (e.key === "ArrowLeft") cambiarFotoModal(-1);
+    if (e.key === "ArrowRight") cambiarFotoModal(1);
   });
 }
 
@@ -139,7 +184,9 @@ async function renderTienda() {
     }
 
     productosData = productos;
-    fotosProductos = productos.map((p) => buscarArchivoPorNombre(archivosTienda, p.SKU)?.download_url || "");
+    fotosProductos = productos.map((p) =>
+      p.Imagen ? [p.Imagen] : buscarArchivosPorNombre(archivosTienda, p.SKU).map((a) => a.download_url)
+    );
 
     grid.innerHTML = productos
       .map(

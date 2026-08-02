@@ -124,6 +124,17 @@ function buscarArchivoPorNombre(archivos, nombreBase) {
   return archivos.find((a) => slugify(a.name.replace(/\.[^.]+$/, "")) === objetivo) || null;
 }
 
+function buscarArchivosPorNombre(archivos, nombreBase) {
+  const objetivo = slugify(nombreBase);
+  if (!objetivo) return [];
+  return archivos
+    .filter((a) => {
+      const nombreSlug = slugify(a.name.replace(/\.[^.]+$/, ""));
+      return nombreSlug === objetivo || nombreSlug.startsWith(`${objetivo}-`);
+    })
+    .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+}
+
 function formatRangoFecha(fechaObj, fechaFinObj) {
   const mesAbrev = (d) => d.toLocaleDateString("es-CO", { month: "short" });
   if (!fechaFinObj || fechaFinObj.getTime() === fechaObj.getTime()) {
