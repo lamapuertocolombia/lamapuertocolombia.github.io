@@ -29,4 +29,7 @@ const CONFIG = {
   githubOwner: "lamapuertocolombia",
   githubRepo: "lamapuertocolombia.github.io",
   galeriaCarpeta: "assets/galeria",
+  pilotosCarpeta: "assets/pilotos",
+  tiendaCarpeta: "assets/tienda",
+  fundadoresCarpeta: "assets/fundadores",
 };

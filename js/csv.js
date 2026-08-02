@@ -118,6 +118,12 @@ async function fetchArchivosCarpeta(carpeta, extensiones) {
     .sort((a, b) => b.name.localeCompare(a.name));
 }
 
+function buscarArchivoPorNombre(archivos, nombreBase) {
+  const objetivo = slugify(nombreBase);
+  if (!objetivo) return null;
+  return archivos.find((a) => slugify(a.name.replace(/\.[^.]+$/, "")) === objetivo) || null;
+}
+
 function formatRangoFecha(fechaObj, fechaFinObj) {
   const mesAbrev = (d) => d.toLocaleDateString("es-CO", { month: "short" });
   if (!fechaFinObj || fechaFinObj.getTime() === fechaObj.getTime()) {

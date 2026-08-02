@@ -1,7 +1,10 @@
 async function renderFundadores() {
   const grid = document.getElementById("fundadoresGrid");
   try {
-    const fundadores = await fetchSheet(CONFIG.sheets.fundadores);
+    const [fundadores, archivosFundadores] = await Promise.all([
+      fetchSheet(CONFIG.sheets.fundadores),
+      fetchArchivosCarpeta(CONFIG.fundadoresCarpeta, EXTENSIONES_IMAGEN).catch(() => []),
+    ]);
     if (fundadores.length === 0) {
       grid.innerHTML =
         '<p class="state">Aún no se han añadido los miembros fundadores. Agrégalos en la hoja de Google Sheets de Fundadores para rendirles homenaje aquí.</p>';
@@ -11,13 +14,10 @@ async function renderFundadores() {
     grid.innerHTML = fundadores
       .map((f) => {
         const tieneApodoDistinto = f.Apodo && f.Apodo.trim() && f.Apodo.trim() !== f.Nombre.trim();
+        const fotoUrl = f.Foto || buscarArchivoPorNombre(archivosFundadores, f.Apodo || f.Nombre)?.download_url || "";
         return `
         <div class="card">
-          <div class="card-media">${
-            f.Foto || f.Apodo || f.Nombre
-              ? imgWithFallback(f.Foto, `assets/fundadores/${slugify(f.Apodo || f.Nombre)}.jpg`, f.Apodo || f.Nombre, "medalla")
-              : ICONS.medalla
-          }</div>
+          <div class="card-media">${fotoUrl ? imgWithFallback(fotoUrl, "", f.Apodo || f.Nombre, "medalla") : ICONS.medalla}</div>
           <div class="card-body">
             <h3>${escapeHTML(f.Apodo || f.Nombre)}</h3>
             ${tieneApodoDistinto ? `<p class="card-meta">${escapeHTML(f.Nombre)}</p>` : ""}

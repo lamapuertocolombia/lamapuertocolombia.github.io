@@ -20,14 +20,63 @@ function stockBadgeHTML(stock) {
   return `<p class="stock-badge" style="visibility:hidden">.</p>`;
 }
 
+let productosData = [];
+let fotosProductos = [];
+
+function productoMediaHTML(p, idx) {
+  const fotoUrl = p.Imagen || fotosProductos[idx] || "";
+  return fotoUrl ? imgWithFallback(fotoUrl, "", p.Nombre, "tienda") : ICONS.tienda;
+}
+
+function productoInfoHTML(p) {
+  const precioBase = Number(p.Precio) || 0;
+  const opciones = parseOpciones(p.Opciones, precioBase);
+  const precioInicial = opciones.length > 0 ? opciones[0].precio : precioBase;
+  return `
+    ${p.SKU ? `<p class="sku-tag">SKU: ${escapeHTML(p.SKU)}</p>` : ""}
+    <h3>${escapeHTML(p.Nombre)}</h3>
+    <p class="card-meta">${escapeHTML(p.Descripcion || "")}</p>
+    <p class="price">${formatCOP(precioInicial)}</p>
+    ${opciones.length > 0 ? `<p class="card-meta">Tallas/variantes: ${opciones.map((o) => escapeHTML(o.label)).join(", ")}</p>` : ""}`;
+}
+
+function abrirProductoModal(idx) {
+  const p = productosData[idx];
+  if (!p) return;
+  document.getElementById("productModalMedia").innerHTML = productoMediaHTML(p, idx);
+  document.getElementById("productModalInfo").innerHTML = productoInfoHTML(p);
+  document.getElementById("productModalOverlay").classList.add("open");
+}
+
+function cerrarProductoModal() {
+  document.getElementById("productModalOverlay")?.classList.remove("open");
+}
+
+function initProductoModal() {
+  document.getElementById("productModalClose")?.addEventListener("click", cerrarProductoModal);
+  document.getElementById("productModalOverlay")?.addEventListener("click", (e) => {
+    if (e.target.id === "productModalOverlay") cerrarProductoModal();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") cerrarProductoModal();
+  });
+}
+
 async function renderTienda() {
   const grid = document.getElementById("tiendaGrid");
   try {
-    const productos = await fetchSheet(CONFIG.sheets.tienda);
+    const [productos, archivosTienda] = await Promise.all([
+      fetchSheet(CONFIG.sheets.tienda),
+      fetchArchivosCarpeta(CONFIG.tiendaCarpeta, EXTENSIONES_IMAGEN).catch(() => []),
+    ]);
+
     if (productos.length === 0) {
       grid.innerHTML = '<p class="state">Aún no hay productos en la tienda.</p>';
       return;
     }
+
+    productosData = productos;
+    fotosProductos = productos.map((p) => buscarArchivoPorNombre(archivosTienda, p.SKU)?.download_url || "");
 
     grid.innerHTML = productos
       .map((p, idx) => {
@@ -38,11 +87,7 @@ async function renderTienda() {
         const stockInicial = opciones.length > 0 ? opciones[0].stock : stockSimple;
         return `
         <div class="card">
-          <div class="card-media">${
-            p.Imagen || p.SKU
-              ? imgWithFallback(p.Imagen, `assets/tienda/${slugify(p.SKU)}.jpg`, p.Nombre, "tienda")
-              : ICONS.tienda
-          }</div>
+          <div class="card-media clicable" role="button" tabindex="0" data-producto-idx="${idx}">${productoMediaHTML(p, idx)}</div>
           <div class="card-body">
             ${p.SKU ? `<p class="sku-tag">SKU: ${escapeHTML(p.SKU)}</p>` : ""}
             <h3>${escapeHTML(p.Nombre)}</h3>
@@ -103,9 +148,23 @@ async function renderTienda() {
         });
       });
     });
+
+    grid.querySelectorAll("[data-producto-idx]").forEach((el) => {
+      const abrir = () => abrirProductoModal(Number(el.dataset.productoIdx));
+      el.addEventListener("click", abrir);
+      el.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          abrir();
+        }
+      });
+    });
   } catch (err) {
     grid.innerHTML = '<p class="state">No se pudo cargar la tienda.</p>';
   }
 }
 
-document.addEventListener("DOMContentLoaded", renderTienda);
+document.addEventListener("DOMContentLoaded", () => {
+  initProductoModal();
+  renderTienda();
+});

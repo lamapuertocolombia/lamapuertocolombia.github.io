@@ -9,6 +9,7 @@ function estadoBadgeClass(estado) {
 }
 
 let pilotosData = [];
+let fotosPilotos = [];
 
 function pilotoInfoHTML(p) {
   const fechaIngresoObj = p.FechaIngreso ? parseFechaLocal(p.FechaIngreso) : null;
@@ -23,16 +24,15 @@ function pilotoInfoHTML(p) {
     <span class="badge ${estadoBadgeClass(p.Estado)}">${escapeHTML(p.Estado || "Prospecto")}</span>`;
 }
 
-function pilotoMediaHTML(p) {
-  return p.Foto || p.Apodo || p.Nombre
-    ? imgWithFallback(p.Foto, `assets/pilotos/${slugify(p.Apodo || p.Nombre)}.jpg`, p.Apodo || p.Nombre, "moto")
-    : ICONS.moto;
+function pilotoMediaHTML(p, idx) {
+  const fotoUrl = p.Foto || fotosPilotos[idx] || "";
+  return fotoUrl ? imgWithFallback(fotoUrl, "", p.Apodo || p.Nombre, "moto") : ICONS.moto;
 }
 
 function pilotoCardHTML(p, idx) {
   return `
     <div class="card clicable" data-piloto-idx="${idx}" role="button" tabindex="0">
-      <div class="card-media">${pilotoMediaHTML(p)}</div>
+      <div class="card-media">${pilotoMediaHTML(p, idx)}</div>
       <div class="card-body">${pilotoInfoHTML(p)}</div>
     </div>`;
 }
@@ -40,7 +40,7 @@ function pilotoCardHTML(p, idx) {
 function abrirPilotoModal(idx) {
   const p = pilotosData[idx];
   if (!p) return;
-  document.getElementById("pilotModalMedia").innerHTML = pilotoMediaHTML(p);
+  document.getElementById("pilotModalMedia").innerHTML = pilotoMediaHTML(p, idx);
   document.getElementById("pilotModalInfo").innerHTML = pilotoInfoHTML(p);
   document.getElementById("pilotModalOverlay").classList.add("open");
 }
@@ -76,7 +76,10 @@ async function renderPilotos() {
   const juntaGrid = document.getElementById("juntaGrid");
   const grid = document.getElementById("pilotosGrid");
   try {
-    const pilotos = await fetchSheet(CONFIG.sheets.pilotos);
+    const [pilotos, archivosPilotos] = await Promise.all([
+      fetchSheet(CONFIG.sheets.pilotos),
+      fetchArchivosCarpeta(CONFIG.pilotosCarpeta, EXTENSIONES_IMAGEN).catch(() => []),
+    ]);
     if (pilotos.length === 0) {
       juntaGrid.innerHTML = '<p class="state">Aún no hay pilotos registrados.</p>';
       grid.innerHTML = "";
@@ -84,6 +87,7 @@ async function renderPilotos() {
     }
 
     pilotosData = pilotos;
+    fotosPilotos = pilotos.map((p) => buscarArchivoPorNombre(archivosPilotos, p.Apodo || p.Nombre)?.download_url || "");
     const junta = pilotos.map((p, idx) => ({ p, idx })).filter(({ p }) => p.Cargo && p.Cargo.trim());
     const resto = pilotos.map((p, idx) => ({ p, idx })).filter(({ p }) => !(p.Cargo && p.Cargo.trim()));
 
