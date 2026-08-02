@@ -59,6 +59,22 @@ function escapeHTML(value) {
     .replace(/'/g, "&#39;");
 }
 
+function slugify(value) {
+  return String(value ?? "")
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase()
+    .replace(/["']/g, "")
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-+|-+$)/g, "");
+}
+
+function imgWithFallback(explicitUrl, fallbackPath, alt, fallbackIcon) {
+  const src = explicitUrl || fallbackPath;
+  return `<img src="${escapeHTML(src)}" alt="${escapeHTML(alt)}" onerror="this.onerror=null; this.closest('.card-media').innerHTML='${fallbackIcon}';">`;
+}
+
 function parseFechaLocal(fechaStr) {
   const [y, m, d] = fechaStr.split("-").map(Number);
   return new Date(y, m - 1, d);

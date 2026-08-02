@@ -12,7 +12,11 @@ async function renderFundadores() {
       .map(
         (f) => `
         <div class="card">
-          <div class="card-media">${f.Foto ? `<img src="${escapeHTML(f.Foto)}" alt="${escapeHTML(f.Nombre)}">` : "🎖️"}</div>
+          <div class="card-media">${
+            f.Foto || f.Apodo || f.Nombre
+              ? imgWithFallback(f.Foto, `assets/fundadores/${slugify(f.Apodo || f.Nombre)}.jpg`, f.Apodo || f.Nombre, "🎖️")
+              : "🎖️"
+          }</div>
           <div class="card-body">
             <h3>${escapeHTML(f.Apodo || f.Nombre)}</h3>
             <p class="card-meta">${escapeHTML(f.Nombre)}</p>

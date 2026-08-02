@@ -41,7 +41,14 @@ Notas sobre columnas:
 - `Estado` en Pilotos debe ser exactamente: `Full Color`, `Prospecto`, `En Licencia` o `Retirado`.
 - `Cargo` en Pilotos es opcional. Si un piloto tiene cargo (ej. `Presidente`, `Vicepresidente`, `Tesorero`), aparece en la sección "Junta Directiva" en vez de en la lista general de pilotos.
 - `Tipo` en Galería debe ser `foto` o `video`.
-- `Foto`, `Imagen` y `Miniatura` deben ser un enlace público a la imagen (por ejemplo, un enlace de "cualquiera con el link puede ver" de Google Drive, o un link directo de imagen). Si los dejas vacíos, se muestra un ícono en su lugar.
+- `Foto` e `Imagen` tienen dos formas de funcionar:
+  1. **Pegando un link** (Imgur, o cualquier link directo de imagen; Google Drive suele fallar, mejor evitarlo).
+  2. **Sin pegar ningún link**: solo sube el archivo de foto a la carpeta correspondiente del proyecto, con el nombre exacto que le corresponde, y aparece automático sin tocar la hoja:
+     - Pilotos → carpeta `assets/pilotos/`, nombre del archivo = el Apodo (o Nombre si no tiene apodo), en minúsculas, sin tildes ni comillas, espacios reemplazados por guiones. Ej. Apodo `"Milito"` → `assets/pilotos/milito.jpg`.
+     - Tienda → carpeta `assets/tienda/`, nombre del archivo = el SKU en minúsculas. Ej. SKU `JMN-001` → `assets/tienda/jmn-001.jpg`.
+     - Fundadores → carpeta `assets/fundadores/`, mismo criterio que Pilotos.
+  Si pones un link en la hoja, ese link manda (tiene prioridad). Si el archivo no existe todavía, simplemente se muestra el ícono normal, sin error.
+- `Miniatura` en Galería sí requiere pegar un link (no tiene carpeta automática, porque cada foto/video es distinto).
 - La página de **Pilotos** es pública: no incluyas ahí datos sensibles (RH, cédula, placa, licencia). Esos se quedan solo en tu base de datos interna.
 
 ## Configurar WhatsApp, redes y el formulario de prospecto

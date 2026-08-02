@@ -38,7 +38,11 @@ async function renderTienda() {
         const stockInicial = opciones.length > 0 ? opciones[0].stock : stockSimple;
         return `
         <div class="card">
-          <div class="card-media">${p.Imagen ? `<img src="${escapeHTML(p.Imagen)}" alt="${escapeHTML(p.Nombre)}">` : "🛍️"}</div>
+          <div class="card-media">${
+            p.Imagen || p.SKU
+              ? imgWithFallback(p.Imagen, `assets/tienda/${slugify(p.SKU)}.jpg`, p.Nombre, "🛍️")
+              : "🛍️"
+          }</div>
           <div class="card-body">
             ${p.SKU ? `<p class="sku-tag">SKU: ${escapeHTML(p.SKU)}</p>` : ""}
             <h3>${escapeHTML(p.Nombre)}</h3>

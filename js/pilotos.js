@@ -12,7 +12,11 @@ function pilotoCardHTML(p) {
   const anioIngreso = p.FechaIngreso ? p.FechaIngreso.split("-")[0] : "";
   return `
     <div class="card">
-      <div class="card-media">${p.Foto ? `<img src="${escapeHTML(p.Foto)}" alt="${escapeHTML(p.Apodo)}">` : "🏍️"}</div>
+      <div class="card-media">${
+        p.Foto || p.Apodo || p.Nombre
+          ? imgWithFallback(p.Foto, `assets/pilotos/${slugify(p.Apodo || p.Nombre)}.jpg`, p.Apodo || p.Nombre, "🏍️")
+          : "🏍️"
+      }</div>
       <div class="card-body">
         ${p.Cargo ? `<p class="cargo-tag">${escapeHTML(p.Cargo)}</p>` : ""}
         <h3>${escapeHTML(p.Apodo || p.Nombre)}</h3>
