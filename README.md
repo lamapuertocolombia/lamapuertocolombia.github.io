@@ -40,7 +40,8 @@ Notas sobre columnas:
 - `Stock` es la cantidad disponible del producto (si no tiene variantes/tallas). Si el producto sí tiene tallas, el stock de cada una va dentro de `Opciones` como tercer valor: `S:80000:3|M:80000:4` (talla:precio:stock). Cuando el stock de una variante llega al umbral definido en `js/config.js` (`stockBajoUmbral`, por defecto 5) o menos, se muestra "¡Últimas unidades!"; en 0 se muestra "Agotado" y se bloquea el botón de compra.
 - `Estado` en Pilotos debe ser exactamente: `Full Color`, `Prospecto`, `En Licencia` o `Retirado`.
 - `Cargo` en Pilotos es opcional. Si un piloto tiene cargo (ej. `Presidente`, `Vicepresidente`, `Tesorero`), aparece en la sección "Junta Directiva" en vez de en la lista general de pilotos.
-- `Tipo` en Galería debe ser `foto` o `video`.
+- `Tipo` en Galería debe ser `foto` o `video`. La hoja de Galería es solo para **videos** (pega el link de YouTube/Facebook) y fotos que quieras describir con evento/fecha. Para fotos simples, mejor usa la carpeta automática de abajo.
+- **Fotos automáticas de Galería**: sube el archivo directo a la carpeta `assets/galeria/` del repositorio (por la web de GitHub: entra a esa carpeta → "Add file" → "Upload files"). Aparece solo en la página de Galería, usando el nombre del archivo como título (ej. `rodada-santa-veronica.jpg` se muestra como "Rodada Santa Veronica"). Si nombras los archivos empezando con la fecha (ej. `2026-08-15-aniversario.jpg`), se ordenan de más reciente a más antiguo automáticamente.
 - `Foto` e `Imagen` tienen dos formas de funcionar:
   1. **Pegando un link** (Imgur, o cualquier link directo de imagen; Google Drive suele fallar, mejor evitarlo).
   2. **Sin pegar ningún link**: solo sube el archivo de foto a la carpeta correspondiente del proyecto, con el nombre exacto que le corresponde, y aparece automático sin tocar la hoja:

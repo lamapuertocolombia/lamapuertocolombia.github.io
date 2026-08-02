@@ -1,7 +1,47 @@
+const EXTENSIONES_IMAGEN = ["jpg", "jpeg", "png", "gif", "webp"];
+
+function nombreBonito(archivo) {
+  const sinExtension = archivo.replace(/\.[^.]+$/, "");
+  return sinExtension
+    .replace(/[-_]+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (letra) => letra.toUpperCase());
+}
+
+async function fetchFotosCarpeta() {
+  const { githubOwner, githubRepo, galeriaCarpeta } = CONFIG;
+  if (!githubOwner || !githubRepo || !galeriaCarpeta) return [];
+
+  const url = `https://api.github.com/repos/${githubOwner}/${githubRepo}/contents/${galeriaCarpeta}`;
+  const response = await fetch(url, { cache: "no-store" });
+  if (!response.ok) return [];
+
+  const archivos = await response.json();
+  if (!Array.isArray(archivos)) return [];
+
+  return archivos
+    .filter((a) => a.type === "file")
+    .filter((a) => EXTENSIONES_IMAGEN.includes((a.name.split(".").pop() || "").toLowerCase()))
+    .sort((a, b) => b.name.localeCompare(a.name))
+    .map((a) => ({
+      Evento: nombreBonito(a.name),
+      Fecha: "",
+      Tipo: "foto",
+      URL: a.download_url,
+      Miniatura: a.download_url,
+    }));
+}
+
 async function renderGaleria() {
   const grid = document.getElementById("galeriaGrid");
   try {
-    const items = await fetchSheet(CONFIG.sheets.galeria);
+    const [itemsHoja, fotosCarpeta] = await Promise.all([
+      fetchSheet(CONFIG.sheets.galeria).catch(() => []),
+      fetchFotosCarpeta().catch(() => []),
+    ]);
+
+    const items = [...fotosCarpeta, ...itemsHoja];
+
     if (items.length === 0) {
       grid.innerHTML = '<p class="state">Aún no hay fotos ni videos.</p>';
       return;

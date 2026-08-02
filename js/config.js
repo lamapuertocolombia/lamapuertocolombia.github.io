@@ -23,4 +23,10 @@ const CONFIG = {
     galeria: "data/galeria.csv",
     fundadores: "data/fundadores.csv",
   },
+
+  // Repositorio de GitHub donde vive este sitio. Se usa para leer automáticamente
+  // los archivos que subas a assets/galeria/, sin necesidad de una hoja de datos.
+  githubOwner: "lamapuertocolombia",
+  githubRepo: "lamapuertocolombia.github.io",
+  galeriaCarpeta: "assets/galeria",
 };
