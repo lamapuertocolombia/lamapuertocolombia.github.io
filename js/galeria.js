@@ -1,5 +1,5 @@
 function nombreBonito(archivo) {
-  const sinExtension = archivo.replace(/\.[^.]+$/, "");
+  const sinExtension = quitarExtension(archivo);
   return sinExtension
     .replace(/[-_]+/g, " ")
     .trim()

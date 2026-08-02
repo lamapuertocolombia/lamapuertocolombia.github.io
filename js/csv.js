@@ -101,6 +101,10 @@ function parseFechaLocal(fechaStr) {
 
 const EXTENSIONES_IMAGEN = ["jpg", "jpeg", "png", "gif", "webp"];
 
+function quitarExtension(nombreArchivo) {
+  return nombreArchivo.replace(/(\.(jpg|jpeg|png|gif|webp))+$/i, "");
+}
+
 async function fetchArchivosCarpeta(carpeta, extensiones) {
   const { githubOwner, githubRepo } = CONFIG;
   if (!githubOwner || !githubRepo || !carpeta) return [];
@@ -121,7 +125,7 @@ async function fetchArchivosCarpeta(carpeta, extensiones) {
 function buscarArchivoPorNombre(archivos, nombreBase) {
   const objetivo = slugify(nombreBase);
   if (!objetivo) return null;
-  return archivos.find((a) => slugify(a.name.replace(/\.[^.]+$/, "")) === objetivo) || null;
+  return archivos.find((a) => slugify(quitarExtension(a.name)) === objetivo) || null;
 }
 
 function buscarArchivosPorNombre(archivos, nombreBase) {
@@ -129,12 +133,12 @@ function buscarArchivosPorNombre(archivos, nombreBase) {
   if (!objetivo) return [];
   return archivos
     .filter((a) => {
-      const nombreSlug = slugify(a.name.replace(/\.[^.]+$/, ""));
+      const nombreSlug = slugify(quitarExtension(a.name));
       return nombreSlug === objetivo || nombreSlug.startsWith(`${objetivo}-`);
     })
     .sort((a, b) => {
-      const slugA = slugify(a.name.replace(/\.[^.]+$/, ""));
-      const slugB = slugify(b.name.replace(/\.[^.]+$/, ""));
+      const slugA = slugify(quitarExtension(a.name));
+      const slugB = slugify(quitarExtension(b.name));
       if (slugA === objetivo && slugB !== objetivo) return -1;
       if (slugA !== objetivo && slugB === objetivo) return 1;
       return slugA.localeCompare(slugB, undefined, { numeric: true });
