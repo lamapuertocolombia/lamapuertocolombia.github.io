@@ -43,4 +43,35 @@ async function renderProximaActividad() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", renderProximaActividad);
+async function initHeroSlideshow() {
+  const contenedor = document.getElementById("heroSlideshow");
+  if (!contenedor) return;
+
+  try {
+    const archivos = (await fetchArchivosCarpeta(CONFIG.galeriaCarpeta, EXTENSIONES_IMAGEN)).slice(0, 8);
+    if (archivos.length === 0) return;
+
+    contenedor.innerHTML = archivos
+      .map(
+        (a, idx) => `<img src="${escapeHTML(a.download_url)}" alt="" class="hero-slide${idx === 0 ? " active" : ""}">`
+      )
+      .join("");
+
+    const slides = contenedor.querySelectorAll(".hero-slide");
+    if (slides.length <= 1) return;
+
+    let actual = 0;
+    setInterval(() => {
+      slides[actual].classList.remove("active");
+      actual = (actual + 1) % slides.length;
+      slides[actual].classList.add("active");
+    }, 5000);
+  } catch (err) {
+    // Sin fotos de fondo, se queda el degradado normal.
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderProximaActividad();
+  initHeroSlideshow();
+});

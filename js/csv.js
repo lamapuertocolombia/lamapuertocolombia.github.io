@@ -99,6 +99,25 @@ function parseFechaLocal(fechaStr) {
   return null;
 }
 
+const EXTENSIONES_IMAGEN = ["jpg", "jpeg", "png", "gif", "webp"];
+
+async function fetchArchivosCarpeta(carpeta, extensiones) {
+  const { githubOwner, githubRepo } = CONFIG;
+  if (!githubOwner || !githubRepo || !carpeta) return [];
+
+  const url = `https://api.github.com/repos/${githubOwner}/${githubRepo}/contents/${carpeta}`;
+  const response = await fetch(url, { cache: "no-store" });
+  if (!response.ok) return [];
+
+  const archivos = await response.json();
+  if (!Array.isArray(archivos)) return [];
+
+  return archivos
+    .filter((a) => a.type === "file")
+    .filter((a) => extensiones.includes((a.name.split(".").pop() || "").toLowerCase()))
+    .sort((a, b) => b.name.localeCompare(a.name));
+}
+
 function formatRangoFecha(fechaObj, fechaFinObj) {
   const mesAbrev = (d) => d.toLocaleDateString("es-CO", { month: "short" });
   if (!fechaFinObj || fechaFinObj.getTime() === fechaObj.getTime()) {
