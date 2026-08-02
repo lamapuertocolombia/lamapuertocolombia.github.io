@@ -11,12 +11,18 @@ let anioActual = new Date().getFullYear();
 function agruparPorDia(actividades) {
   const mapa = new Map();
   actividades.forEach((a) => {
-    const key = `${a.fechaObj.getFullYear()}-${a.fechaObj.getMonth()}-${a.fechaObj.getDate()}`;
-    if (!mapa.has(key)) mapa.set(key, []);
-    mapa.get(key).push(a);
+    const fin = a.fechaFinObj || a.fechaObj;
+    const cursor = new Date(a.fechaObj);
+    while (cursor <= fin) {
+      const key = `${cursor.getFullYear()}-${cursor.getMonth()}-${cursor.getDate()}`;
+      if (!mapa.has(key)) mapa.set(key, []);
+      mapa.get(key).push(a);
+      cursor.setDate(cursor.getDate() + 1);
+    }
   });
   return mapa;
 }
+
 
 function renderCalendario() {
   const cont = document.getElementById("actividadesCalendario");
@@ -97,11 +103,10 @@ function mostrarVista(vista) {
 }
 
 function filaActividadHTML(a) {
-  const dia = a.fechaObj.getDate();
-  const mes = a.fechaObj.toLocaleDateString("es-CO", { month: "short" });
+  const { dia, sub } = formatRangoFecha(a.fechaObj, a.fechaFinObj);
   return `
     <div class="activity-row">
-      <div class="activity-date">${dia}<span>${mes}</span></div>
+      <div class="activity-date">${dia}<span>${sub}</span></div>
       <div>
         <h3 style="margin:0 0 4px">${escapeHTML(a.Nombre)}</h3>
         <p class="card-meta" style="margin:0 0 6px">${escapeHTML(a.Lugar || "")}</p>
@@ -133,7 +138,11 @@ async function renderActividades() {
       return;
     }
 
-    const conFechaObj = actividades.map((a) => ({ ...a, fechaObj: parseFechaLocal(a.Fecha) }));
+    const conFechaObj = actividades.map((a) => ({
+      ...a,
+      fechaObj: parseFechaLocal(a.Fecha),
+      fechaFinObj: a.FechaFin ? parseFechaLocal(a.FechaFin) : null,
+    }));
     const conFecha = conFechaObj.filter((a) => a.fechaObj).sort((a, b) => a.fechaObj - b.fechaObj);
     const sinFecha = conFechaObj.filter((a) => !a.fechaObj);
 

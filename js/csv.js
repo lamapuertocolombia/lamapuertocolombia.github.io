@@ -99,6 +99,17 @@ function parseFechaLocal(fechaStr) {
   return null;
 }
 
+function formatRangoFecha(fechaObj, fechaFinObj) {
+  const mesAbrev = (d) => d.toLocaleDateString("es-CO", { month: "short" });
+  if (!fechaFinObj || fechaFinObj.getTime() === fechaObj.getTime()) {
+    return { dia: String(fechaObj.getDate()), sub: mesAbrev(fechaObj) };
+  }
+  if (fechaObj.getMonth() === fechaFinObj.getMonth() && fechaObj.getFullYear() === fechaFinObj.getFullYear()) {
+    return { dia: `${fechaObj.getDate()}-${fechaFinObj.getDate()}`, sub: mesAbrev(fechaObj) };
+  }
+  return { dia: `${fechaObj.getDate()} ${mesAbrev(fechaObj)}`, sub: `${fechaFinObj.getDate()} ${mesAbrev(fechaFinObj)}` };
+}
+
 async function fetchSheet(url) {
   const response = await fetch(url, { cache: "no-store" });
   if (!response.ok) throw new Error(`No se pudo cargar ${url}`);

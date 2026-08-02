@@ -10,8 +10,12 @@ async function renderProximaActividad() {
     hoy.setHours(0, 0, 0, 0);
 
     const proximas = actividades
-      .map((a) => ({ ...a, fechaObj: parseFechaLocal(a.Fecha) }))
-      .filter((a) => a.fechaObj && a.fechaObj >= hoy)
+      .map((a) => ({
+        ...a,
+        fechaObj: parseFechaLocal(a.Fecha),
+        fechaFinObj: a.FechaFin ? parseFechaLocal(a.FechaFin) : null,
+      }))
+      .filter((a) => a.fechaObj && (a.fechaFinObj || a.fechaObj) >= hoy)
       .sort((a, b) => a.fechaObj - b.fechaObj);
 
     if (proximas.length === 0) {
@@ -21,13 +25,16 @@ async function renderProximaActividad() {
     }
 
     const a = proximas[0];
-    const [dia, mes] = [a.fechaObj.getDate(), a.fechaObj.toLocaleDateString("es-CO", { month: "short" })];
+    const { dia, sub } = formatRangoFecha(a.fechaObj, a.fechaFinObj);
+    const rangoTexto = a.fechaFinObj
+      ? `${formatFechaLarga(a.Fecha)} al ${formatFechaLarga(a.FechaFin)}`
+      : formatFechaLarga(a.Fecha);
     el.classList.remove("state");
     el.innerHTML = `
-      <div class="activity-date">${dia}<span>${mes}</span></div>
+      <div class="activity-date">${dia}<span>${sub}</span></div>
       <div>
         <h3 style="margin:0 0 4px">${escapeHTML(a.Nombre)}</h3>
-        <p class="card-meta" style="margin:0 0 6px">${formatFechaLarga(a.Fecha)} · ${escapeHTML(a.Lugar || "")}</p>
+        <p class="card-meta" style="margin:0 0 6px">${rangoTexto} · ${escapeHTML(a.Lugar || "")}</p>
         <p style="margin:0">${escapeHTML(a.Descripcion || "")}</p>
       </div>
     `;

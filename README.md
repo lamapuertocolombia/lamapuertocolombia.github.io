@@ -24,7 +24,7 @@ Para cada sección (Pilotos, Tienda, Actividades, Galería, Fundadores):
 1. Crea una hoja de Google Sheets con exactamente estas columnas en la primera fila:
    - **Pilotos**: `Apodo, Nombre, Moto, Foto, Estado, FechaIngreso, Cargo`
    - **Tienda**: `SKU, Nombre, Precio, Opciones, Stock, Descripcion, Imagen`
-   - **Actividades**: `Nombre, Fecha, Lugar, Descripcion, LinkRegistro`
+   - **Actividades**: `Nombre, Fecha, FechaFin, Lugar, Descripcion, LinkRegistro`
    - **Galería**: `Evento, Fecha, Tipo, URL, Miniatura`
    - **Fundadores**: `Nombre, Apodo, Rol, Foto, Mensaje`
 2. Ve a **Archivo > Compartir > Publicar en la web**.
@@ -35,6 +35,7 @@ Para cada sección (Pilotos, Tienda, Actividades, Galería, Fundadores):
 Notas sobre columnas:
 - `Fecha` y `FechaIngreso` deben ir en formato `AAAA-MM-DD` (ej. `2026-08-15`), o también funciona `M/D/AAAA` (ej. `8/15/2026`). Si escribes texto libre (ej. "15 y 16 de noviembre"), la actividad igual aparece en la lista pero no se puede ordenar ni se muestra en el calendario — mejor usa una fecha exacta y pon el detalle en la Descripción.
 - **Actividades** tiene dos vistas (Lista y Calendario, con un botón para cambiar entre ellas). El calendario se arma automáticamente a partir de las fechas que sí se pudieron interpretar.
+- `FechaFin` es opcional, solo para eventos de varios días (ej. el aniversario). Déjala vacía si el evento es de un solo día. Con `Fecha=11/15/2026` y `FechaFin=11/16/2026`, el evento se muestra como "15-16 nov." en la lista y aparece marcado en ambos días en el calendario.
 - `SKU` es el código único de cada producto (ej. `CAM-001`). Aparece en la tarjeta del producto, en el carrito y en el mensaje de WhatsApp del pedido, para identificarlo fácil. Usa el mismo código que manejes en tu inventario.
 - `Opciones` en Tienda se separa con `|` (ej. `S|M|L|XL`). Déjalo vacío si el producto no tiene variantes.
 - Si una variante cuesta distinto del resto (ej. las tallas grandes valen más, o "Pequeña" y "Grande" son precios totalmente distintos), agrega el precio de esa variante así: `S:80000|M:80000|L:80000|XL:80000|2XL:90000`. El precio mostrado cambia automáticamente al elegir la variante.
