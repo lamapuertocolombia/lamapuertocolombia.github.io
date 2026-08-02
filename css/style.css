@@ -501,6 +501,12 @@ img {
   display: block;
 }
 
+#pilotosGrid .card-media,
+#juntaGrid .card-media,
+#fundadoresGrid .card-media {
+  aspect-ratio: 1 / 1;
+}
+
 #pilotosGrid .card-media img,
 #juntaGrid .card-media img,
 #fundadoresGrid .card-media img {
