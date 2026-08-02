@@ -1,0 +1,43 @@
+<header class="site-header">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">
+      <img src="assets/logo-emblem.png" alt="" class="brand-logo" />
+      <span class="brand-text">
+        <span class="brand-mark">L.A.M.A.</span>
+        <span class="brand-sub">Puerto Colombia</span>
+      </span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="site-nav" id="siteNav">
+      <a href="index.html">Inicio</a>
+      <a href="historia.html">Historia</a>
+      <a href="pilotos.html">Pilotos</a>
+      <a href="tienda.html">Tienda</a>
+      <a href="actividades.html">Actividades</a>
+      <a href="galeria.html">Galería</a>
+      <a href="contacto.html">Contacto</a>
+    </nav>
+    <button class="cart-button" id="cartButton" aria-label="Ver carrito">
+      🛒 <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</header>
+
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="cart-drawer-header">
+    <h3>Tu pedido</h3>
+    <button id="cartClose" aria-label="Cerrar carrito">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span>Total</span>
+      <strong id="cartTotal">$0</strong>
+    </div>
+    <button class="btn btn-whatsapp" id="cartCheckout">Pagar por WhatsApp</button>
+    <p class="cart-note">Al confirmar, se abre WhatsApp con tu pedido para coordinar el pago.</p>
+  </div>
+</aside>
+<div class="cart-overlay" id="cartOverlay"></div>

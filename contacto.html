@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contacto - LAMA Puerto Colombia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="navPlaceholder"></div>
+
+  <section class="section">
+    <div class="container">
+      <h1 class="section-title">Contacto</h1>
+      <p class="section-sub">Escríbenos o acércate a una de nuestras actividades</p>
+
+      <div class="contact-grid">
+        <div class="contact-card">
+          <h3>Hablemos</h3>
+          <p>La forma más rápida de contactarnos es por WhatsApp.</p>
+          <p><a id="contactoWhatsapp" class="btn btn-whatsapp" href="#" target="_blank" rel="noopener">Escribir por WhatsApp</a></p>
+          <p style="margin-top:18px">Correo: <a id="contactoEmail" href="#"></a></p>
+          <p>
+            <a id="contactoInstagram" href="#" target="_blank" rel="noopener">Instagram</a> ·
+            <a id="contactoFacebook" href="#" target="_blank" rel="noopener">Facebook</a>
+          </p>
+          <p style="margin-top:18px">
+            ¿Te interesa rodar con nosotros? <a href="#" id="contactoProspecto">Llena el formulario</a> y te contactaremos.
+          </p>
+        </div>
+        <div class="contact-card">
+          <h3>Dónde estamos</h3>
+          <p id="contactoUbicacion"></p>
+          <iframe class="map-frame" id="contactoMapa" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="footerPlaceholder"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/csv.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/contacto.js"></script>
+</body>
+</html>
