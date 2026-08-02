@@ -9,7 +9,9 @@ function estadoBadgeClass(estado) {
 }
 
 function pilotoCardHTML(p) {
-  const anioIngreso = p.FechaIngreso ? p.FechaIngreso.split("-")[0] : "";
+  const fechaIngresoObj = p.FechaIngreso ? parseFechaLocal(p.FechaIngreso) : null;
+  const anioIngreso = fechaIngresoObj ? fechaIngresoObj.getFullYear() : "";
+  const tieneApodoDistinto = p.Apodo && p.Apodo.trim() && p.Apodo.trim() !== p.Nombre.trim();
   return `
     <div class="card">
       <div class="card-media">${
@@ -20,9 +22,9 @@ function pilotoCardHTML(p) {
       <div class="card-body">
         ${p.Cargo ? `<p class="cargo-tag">${escapeHTML(p.Cargo)}</p>` : ""}
         <h3>${escapeHTML(p.Apodo || p.Nombre)}</h3>
-        <p class="card-meta">${escapeHTML(p.Nombre)}</p>
+        ${tieneApodoDistinto ? `<p class="card-meta">${escapeHTML(p.Nombre)}</p>` : ""}
         <p class="card-meta">${escapeHTML(p.Moto || "")}</p>
-        ${anioIngreso ? `<p class="card-meta">Miembro desde ${escapeHTML(anioIngreso)}</p>` : ""}
+        ${anioIngreso ? `<p class="card-meta">Miembro desde ${anioIngreso}</p>` : ""}
         <span class="badge ${estadoBadgeClass(p.Estado)}">${escapeHTML(p.Estado || "Prospecto")}</span>
       </div>
     </div>`;
