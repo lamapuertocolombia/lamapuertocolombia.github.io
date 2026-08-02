@@ -132,7 +132,13 @@ function buscarArchivosPorNombre(archivos, nombreBase) {
       const nombreSlug = slugify(a.name.replace(/\.[^.]+$/, ""));
       return nombreSlug === objetivo || nombreSlug.startsWith(`${objetivo}-`);
     })
-    .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+    .sort((a, b) => {
+      const slugA = slugify(a.name.replace(/\.[^.]+$/, ""));
+      const slugB = slugify(b.name.replace(/\.[^.]+$/, ""));
+      if (slugA === objetivo && slugB !== objetivo) return -1;
+      if (slugA !== objetivo && slugB === objetivo) return 1;
+      return slugA.localeCompare(slugB, undefined, { numeric: true });
+    });
 }
 
 function formatRangoFecha(fechaObj, fechaFinObj) {
