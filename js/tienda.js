@@ -73,8 +73,10 @@ function controlesCompraHTML(p, uid) {
   const precioBase = Number(p.Precio) || 0;
   const opciones = parseOpciones(p.Opciones, precioBase);
   const stockSimple = p.Stock !== undefined && p.Stock !== "" ? Number(p.Stock) : null;
-  const precioInicial = opciones.length > 0 ? opciones[0].precio : precioBase;
-  const stockInicial = opciones.length > 0 ? opciones[0].stock : stockSimple;
+  // Por defecto se elige la primera talla con stock, para no abrir en una agotada.
+  const idxInicial = Math.max(0, opciones.findIndex((o) => o.stock !== 0));
+  const precioInicial = opciones.length > 0 ? opciones[idxInicial].precio : precioBase;
+  const stockInicial = opciones.length > 0 ? opciones[idxInicial].stock : stockSimple;
 
   return `
     <p class="price" id="${uid}-precio">${formatCOP(precioInicial)}</p>
@@ -84,8 +86,8 @@ function controlesCompraHTML(p, uid) {
         ? `<select class="product-select" id="${uid}-opcion">
             ${opciones
               .map(
-                (o) =>
-                  `<option value="${escapeHTML(o.label)}" data-precio="${o.precio}" data-stock="${o.stock ?? ""}">${escapeHTML(o.label)}${o.stock === 0 ? " (Agotado)" : ""}</option>`
+                (o, i) =>
+                  `<option value="${escapeHTML(o.label)}" data-precio="${o.precio}" data-stock="${o.stock ?? ""}" ${i === idxInicial ? "selected" : ""}>${escapeHTML(o.label)}${o.stock === 0 ? " (Agotado)" : ""}</option>`
               )
               .join("")}
           </select>`

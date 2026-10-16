@@ -87,7 +87,7 @@ async function renderPilotos() {
     }
 
     pilotosData = pilotos;
-    fotosPilotos = pilotos.map((p) => buscarArchivoPorNombre(archivosPilotos, p.Apodo || p.Nombre)?.download_url || "");
+    fotosPilotos = pilotos.map((p) => buscarFotoPersona(archivosPilotos, p)?.download_url || "");
     const junta = pilotos.map((p, idx) => ({ p, idx })).filter(({ p }) => p.Cargo && p.Cargo.trim());
     const resto = pilotos.map((p, idx) => ({ p, idx })).filter(({ p }) => !(p.Cargo && p.Cargo.trim()));
 

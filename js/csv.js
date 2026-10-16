@@ -128,6 +128,11 @@ function buscarArchivoPorNombre(archivos, nombreBase) {
   return archivos.find((a) => slugify(quitarExtension(a.name)) === objetivo) || null;
 }
 
+// Foto de una persona: primero por apodo, si no hay, por nombre completo.
+function buscarFotoPersona(archivos, persona) {
+  return buscarArchivoPorNombre(archivos, persona.Apodo) || buscarArchivoPorNombre(archivos, persona.Nombre);
+}
+
 function buscarArchivosPorNombre(archivos, nombreBase) {
   const objetivo = slugify(nombreBase);
   if (!objetivo) return [];

@@ -14,7 +14,7 @@ async function renderFundadores() {
     grid.innerHTML = fundadores
       .map((f) => {
         const tieneApodoDistinto = f.Apodo && f.Apodo.trim() && f.Apodo.trim() !== f.Nombre.trim();
-        const fotoUrl = f.Foto || buscarArchivoPorNombre(archivosFundadores, f.Apodo || f.Nombre)?.download_url || "";
+        const fotoUrl = f.Foto || buscarFotoPersona(archivosFundadores, f)?.download_url || "";
         return `
         <div class="card">
           <div class="card-media">${fotoUrl ? imgWithFallback(fotoUrl, "", f.Apodo || f.Nombre, "medalla") : ICONS.medalla}</div>
