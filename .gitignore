@@ -1,3 +1,7 @@
 .DS_Store
 Thumbs.db
 assets/*.xlsx
+
+# Admin local: costos, clientes y PINs. Nunca se sube.
+admin-local-NO-SUBIR/
+*.xlsx
